@@ -1,0 +1,46 @@
+body {
+    font-family: monospace;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+h1 {
+    text-align: center;
+    color: #c0c0ff;
+}
+
+#vocab-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.vocab-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.4rem 0.75rem;
+    background: #16213e;
+    border-radius: 4px;
+}
+
+.vocab-char {
+    min-width: 2rem;
+    text-align: center;
+    font-size: 1.1rem;
+    color: #a0d0ff;
+    background: #0f3460;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+}
+
+.arrow {
+    color: #555;
+}
+
+.vocab-index {
+    color: #e0e0e0;
+}
