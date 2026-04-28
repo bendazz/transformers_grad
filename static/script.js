@@ -2,8 +2,83 @@ fetch("/vocab")
     .then(res => res.json())
     .then(vocab => {
         buildTable(vocab);
-        drawPlot(vocab);
+        drawPlot(vocab, "plot");
     });
+
+fetch("/position")
+    .then(res => res.json())
+    .then(positions => {
+        buildPositionTable(positions);
+        drawPlot(positions, "position-plot");
+    });
+
+document.getElementById("embed-form").addEventListener("submit", e => {
+    e.preventDefault();
+    const text = document.getElementById("embed-input").value;
+    fetch("/embed_text?text=" + encodeURIComponent(text))
+        .then(res => res.json())
+        .then(items => {
+            const charShaped = {};
+            const posShaped = {};
+            const finalShaped = {};
+            items.forEach((item, i) => {
+                const display = item.char === " " ? "␣" : item.char;
+                charShaped[i + ":" + display] = {
+                    char: display,
+                    embedding: item.character_embedding
+                };
+                posShaped[i] = {
+                    char: String(i),
+                    embedding: item.position_embedding
+                };
+                finalShaped[i + ":" + display] = {
+                    char: i + display,
+                    embedding: item.final_embedding
+                };
+            });
+            buildEmbedTable(items);
+            drawPlot(charShaped, "embed-plot");
+            drawPlot(posShaped, "embed-position-plot");
+            drawPlot(finalShaped, "embed-final-plot");
+        });
+});
+
+function buildEmbedTable(items) {
+    const container = document.getElementById("embed-table");
+    container.innerHTML = "";
+    items.forEach((item, i) => {
+        const row = document.createElement("div");
+        row.className = "vocab-row";
+        const display = item.char === " " ? "␣" : item.char;
+        const cvec = item.character_embedding.map(v => v.toFixed(4)).join(", ");
+        const pvec = item.position_embedding.map(v => v.toFixed(4)).join(", ");
+        const fvec = item.final_embedding.map(v => v.toFixed(4)).join(", ");
+        row.innerHTML =
+            `<span class="vocab-id">${i}</span>` +
+            `<span class="vocab-char">${display}</span>` +
+            `<span class="arrow">→</span>` +
+            `<span class="vocab-vec">[${cvec}]</span>` +
+            `<span class="arrow">+</span>` +
+            `<span class="vocab-vec">[${pvec}]</span>` +
+            `<span class="arrow">=</span>` +
+            `<span class="vocab-vec">[${fvec}]</span>`;
+        container.appendChild(row);
+    });
+}
+
+function buildPositionTable(positions) {
+    const container = document.getElementById("position-table");
+    for (const [pos, info] of Object.entries(positions)) {
+        const row = document.createElement("div");
+        row.className = "vocab-row";
+        const vec = info.embedding.map(v => v.toFixed(4)).join(", ");
+        row.innerHTML =
+            `<span class="vocab-char">${pos}</span>` +
+            `<span class="arrow">→</span>` +
+            `<span class="vocab-vec">[${vec}]</span>`;
+        container.appendChild(row);
+    }
+}
 
 function buildTable(vocab) {
     const container = document.getElementById("vocab-table");
@@ -22,8 +97,8 @@ function buildTable(vocab) {
     }
 }
 
-function drawPlot(vocab) {
-    const canvas = document.getElementById("plot");
+function drawPlot(vocab, canvasId) {
+    const canvas = document.getElementById(canvasId);
     const ctx = canvas.getContext("2d");
     const dpr = window.devicePixelRatio || 1;
     const size = canvas.clientWidth;
@@ -37,8 +112,8 @@ function drawPlot(vocab) {
     const cy = padding + plotSize / 2;
 
     // collect entries and find bounds
-    const entries = Object.entries(vocab).map(([char, info]) => ({
-        char, vec: info.embedding
+    const entries = Object.entries(vocab).map(([key, info]) => ({
+        char: info.char ?? key, vec: info.embedding
     }));
 
     let maxAbs = 0.5;

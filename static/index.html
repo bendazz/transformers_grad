@@ -20,6 +20,43 @@
         </div>
     </div>
 
+    <h1>Positions</h1>
+
+    <div class="layout">
+        <div class="table-panel">
+            <h2>Position Lookup</h2>
+            <div id="position-table"></div>
+        </div>
+        <div class="plot-panel">
+            <h2>Position Embedding Space</h2>
+            <canvas id="position-plot" width="500" height="500"></canvas>
+        </div>
+    </div>
+
+    <h1>Embed Text</h1>
+
+    <div class="layout">
+        <div class="table-panel">
+            <form id="embed-form">
+                <input id="embed-input" type="text" placeholder="type some text..." autocomplete="off">
+                <button type="submit">Embed</button>
+            </form>
+            <div id="embed-table"></div>
+        </div>
+        <div class="plot-panel">
+            <h2>Character Embeddings</h2>
+            <canvas id="embed-plot" width="500" height="500"></canvas>
+        </div>
+        <div class="plot-panel">
+            <h2>Position Embeddings</h2>
+            <canvas id="embed-position-plot" width="500" height="500"></canvas>
+        </div>
+        <div class="plot-panel">
+            <h2>Final Embeddings</h2>
+            <canvas id="embed-final-plot" width="500" height="500"></canvas>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>

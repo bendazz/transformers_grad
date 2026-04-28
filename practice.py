@@ -3,6 +3,6 @@ import torch.nn as nn
 
 embedder = nn.Embedding(10,2)
 
-result = embedder(torch.tensor(7)).tolist()
+result = embedder(torch.tensor(7))
 
 print(result)
